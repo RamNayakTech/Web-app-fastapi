@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlmodel import  SQLModel
 from app.db.database import engine, get_session
+from app.api.v1 import course_routes
 from app.models.course import CourseBase, Course
 
 # # Allow CORS for all origins (development mode)
@@ -37,21 +38,23 @@ SQLModel.metadata.create_all(engine)
 
 app = FastAPI()
 
-@app.post("/v1/create_course", response_model= Course)
-async def create_course(course: CourseBase, session = Depends(get_session)):
-	rec = Course.model_validate(course)
-	session.add(rec)
-	session.commit()
-	session.refresh(rec)
-	return rec
+app.include_router(course_routes.router)
 
-
-@app.get("/v1/course/{course_id}", response_model=Course)
-async def get_course(course_id: int, session = Depends(get_session)):
-	course = session.get(Course, course_id)
-	if not course:
-		raise HTTPException(status_code=403, detail="Course not found")
-	return course
+# @app.post("/v1/create_course", response_model= Course)
+# async def create_course(course: CourseBase, session = Depends(get_session)):
+# 	rec = Course.model_validate(course)
+# 	session.add(rec)
+# 	session.commit()
+# 	session.refresh(rec)
+# 	return rec
+#
+#
+# @app.get("/v1/course/{course_id}", response_model=Course)
+# async def get_course(course_id: int, session = Depends(get_session)):
+# 	course = session.get(Course, course_id)
+# 	if not course:
+# 		raise HTTPException(status_code=403, detail="Course not found")
+# 	return course
 
 #
 # @app.post("/v1/student/register")
