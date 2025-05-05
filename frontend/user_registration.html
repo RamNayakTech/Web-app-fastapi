@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">User Registration</h2>
+
+        <form id="registrationForm" class="space-y-4">
+            <div>
+                <label class="block text-gray-700">First Name</label>
+                <input type="text" id="firstName" required class="w-full mt-1 p-2 border rounded" />
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Last Name</label>
+                <input type="text" id="lastName" required class="w-full mt-1 p-2 border rounded" />
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Date of Birth</label>
+                <input type="date" id="dob" required class="w-full mt-1 p-2 border rounded" />
+            </div>
+
+            <div>
+                <label class="block text-gray-700">Gender</label>
+                <select id="gender" required class="w-full mt-1 p-2 border rounded">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Register</button>
+        </form>
+
+        <div id="message" class="mt-4 text-center"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registrationForm');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const userData = {
+                first_name: document.getElementById('firstName').value,
+                last_name: document.getElementById('lastName').value,
+                dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value
+            };
+
+            axios.post('http://localhost:8000/v1/student/register', userData)
+                .then(response => {
+                    message.textContent = "✅ Registration Successful!";
+                    message.className = "text-green-500";
+                    form.reset();
+                })
+                .catch(error => {
+                    message.textContent = "❌ Error during registration.";
+                    message.className = "text-red-500";
+                });
+        });
+    </script>
+
+</body>
+</html>
